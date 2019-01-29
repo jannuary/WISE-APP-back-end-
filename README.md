@@ -1,4 +1,5 @@
 // 安装必要模块
-> npm install
+> npm install 
+
 // 进入
 > node index.js
