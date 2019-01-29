@@ -1,6 +1,6 @@
-const db = require('./db.js');
-const app = require('./route.js');
-const ObjectID = require('mongodb').ObjectID;
+const db = require('./db.js');  // 导入数据库连接
+const app = require('./route.js');  // 路由
+const ObjectID = require('mongodb').ObjectID;   // 根据_id 查找用户
 
 let result = {  // 返回的数据
     status: 0,
@@ -31,7 +31,7 @@ var legal_key = (req, res, next)=>{
     };
 
     query = req.query;
-    console.log(req);
+    console.log(req.query);
 
     res_result = ()=> res.json(JSON.stringify(result));
 
@@ -39,9 +39,9 @@ var legal_key = (req, res, next)=>{
     if(query.userName == undefined || query.password == undefined) {
         result.info = info.err_key;
         res_result();
-        return;
     }
-    next();
+    else
+        next();
 }
 
 
@@ -133,7 +133,6 @@ let r = {
     info: 'fail',
 }
 
-
 app.all("/logout",(res, req, next)=>{   // 字段判断
     r = {
         status : 0,
@@ -178,19 +177,3 @@ app.all("/logout",(res, req, next)=>{   // 字段判断
 }
 
 
-
-app.all("./show",(req, res)=>{
-    
-    db.find(collection,null,(err, results)=>{ // 返回集合中所有数据
-        if (err) {
-            res.send(502);
-        }
-        else{
-            if(results.length !=0){
-                result.info = info.user_exists;
-                res_result();
-            }else next()
-        }
-    })
-    res.send('ok')
-})
