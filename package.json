@@ -1,0 +1,16 @@
+{
+  "name": "wise",
+  "version": "1.0.0",
+  "description": "老人社区app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "zys",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "mongodb": "^3.1.13",
+    "multer": "^1.4.1"
+  }
+}
