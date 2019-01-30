@@ -7,7 +7,7 @@ var DB_CONN_STR = `mongodb://120.79.95.188:27017/${dbname}`;
 // let collection = "site";
 
 
-let MongoClient_connect = (callback)=>MongoClient.connect(DB_CONN_STR, function(err, db) {
+let MongoClient_connect = (callback)=>MongoClient.connect(DB_CONN_STR, { useNewUrlParser: true }, (err, db)=>{
     if (err) throw err;
     var dbo = db.db(dbname);
     callback(dbo);
