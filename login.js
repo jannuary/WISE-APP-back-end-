@@ -2,6 +2,14 @@ const db = require('./db.js');  // 导入数据库连接
 const app = require('./route.js');  // 路由
 const ObjectID = require('mongodb').ObjectID;   // 根据_id 查找用户
 
+
+const bodyParser = require('body-parser');
+const multer = require('multer'); // v1.0.5
+const upload = multer(); // for parsing multipart/form-data
+
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
 let result = {  // 返回的数据
     status: 0,
     info: null,
@@ -30,8 +38,8 @@ var legal_key = (req, res, next)=>{
         userID: undefined
     };
 
-    query = req.query;
-    console.log(req.query);
+    query = req.body;
+    console.log(query);
 
     res_result = ()=> res.json(JSON.stringify(result));
 
@@ -47,10 +55,10 @@ var legal_key = (req, res, next)=>{
 
 // 注册===========
 {
-app.post('/register', legal_key, (req, res, next)=>{
+app.post('/register',  upload.array(), legal_key,  (req, res, next)=>{
     // 是否已存在用户
     let whereStr = {"userName" : query.userName};
-    
+
     db.find(collection,whereStr,(err, results)=>{ // 返回集合中所有数据
         if (err) {
             res.send(502);
