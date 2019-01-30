@@ -17,13 +17,13 @@ let result = {  // 返回的数据
 };
 
 let info = {    // 信息字典
-    err: 'Err',
-    err_key: 'Err key',
-    user_exists: 'User already exists',
-    user_not_exists: 'User not exists',
-    err_password: 'Err password',
-    ok: 'Ok',
-    fail: 'fail',   // 注销信息
+    err: '未知错误',
+    err_key: '参数错误',
+    user_exists: '该用户名已经存在',
+    user_not_exists: '该用户不存在',
+    err_password: '密码错误',
+    ok: '成功',
+    fail: '注销成功',   // 注销信息
 }
 
 const collection = "site";  // 集合
@@ -175,7 +175,7 @@ upload.array(), (res, req, next)=>{   // 字段判断
                     } 
                     else{
                         result.status = 1;
-                        result.info = 'ok';
+                        result.info = info.ok;
                         req.json(JSON.stringify(result));
                     }
                 })
