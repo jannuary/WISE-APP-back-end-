@@ -13,10 +13,10 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 let result = {  // 返回的数据
     status: 0,
     info: null,
-    userID: null
+    userID: undefined
 };
 
-let info = {    // 信息
+let info = {    // 信息字典
     err: 'Err',
     err_key: 'Err key',
     user_exists: 'User already exists',
@@ -30,7 +30,10 @@ const collection = "site";  // 集合
 let res_result;     // 返回结果
 let query;          // post的数据
 
-// 字段判断
+// 解析post过来body的数据， post数据处理
+
+
+// post数据处理
 var legal_key = (req, res, next)=>{
     result = {  // 初始数据
         status: 0,
@@ -38,6 +41,7 @@ var legal_key = (req, res, next)=>{
         userID: undefined
     };
 
+    let url = req.baseUrl;
     query = req.body;
     console.log(query);
 
@@ -47,15 +51,14 @@ var legal_key = (req, res, next)=>{
     if(query.userName == undefined || query.password == undefined) {
         result.info = info.err_key;
         res_result();
-    }
-    else
+    }else
         next();
 }
-
+app.use(['/register','/login'], upload.array(),legal_key);
 
 // 注册===========
 {
-app.post('/register',  upload.array(), legal_key,  (req, res, next)=>{
+app.post('/register',  (req, res, next)=>{
     // 是否已存在用户
     let whereStr = {"userName" : query.userName};
 
@@ -93,7 +96,7 @@ app.post('/register',  upload.array(), legal_key,  (req, res, next)=>{
 
 // 登陆============
 {
-app.post('/login', legal_key, (res, req, next)=>{
+app.post('/login', (res, req, next)=>{
     // 查询是否存在
     let whereStr = {'userName': query.userName};
 
@@ -136,25 +139,26 @@ app.post('/login', legal_key, (res, req, next)=>{
 // 注销=============
 {
 // 注销返回的数据
-let r = {
-    status : 0,
-    info: 'fail',
-}
 
-app.all("/logout",(res, req, next)=>{   // 字段判断
-    r = {
+app.all("/logout", 
+upload.array(), (res, req, next)=>{   // 字段判断
+    result = {
         status : 0,
         info: 'fail',
     }
 
-    query = res.query;
+    query = res.body;
     
     if(query.userID == undefined){
-        r.info = info.err_key;
-        req.json(JSON.stringify(r));
+        result.info = info.err_key;
+        req.json(JSON.stringify(result));
     }
     else next()
-},(res, req)=>{ // 注销
+},
+(res, req)=>{ // 注销
+    console.log("logout");
+    console.log(query)
+    
     let whereStr = { _id:ObjectID(query.userID) };
     
     db.find(collection,whereStr,(err, results)=>{ 
@@ -170,13 +174,13 @@ app.all("/logout",(res, req, next)=>{   // 字段判断
                         res.send(502);
                     } 
                     else{
-                        r.status = 1;
-                        r.info = 'ok';
-                        req.json(JSON.stringify(r));
+                        result.status = 1;
+                        result.info = 'ok';
+                        req.json(JSON.stringify(result));
                     }
                 })
             }else {
-                req.json(JSON.stringify(r));
+                req.json(JSON.stringify(result));
             }
         }
     });
